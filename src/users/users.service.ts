@@ -41,15 +41,18 @@ export class UsersService {
     });
   }
 
-  async updateUser(params: Prisma.UserUncheckedUpdateInput): Promise<User> {
-    if (!this.checkUseExist(+params?.id)) {
+  async updateUser(
+    userId: number,
+    params: Prisma.UserUpdateInput,
+  ): Promise<User> {
+    if (!this.checkUseExist(userId)) {
       throw new Error('User not found!');
     }
 
     return await this.prisma.user.update({
       data: params,
       where: {
-        id: +params.id,
+        id: userId,
       },
     });
   }
