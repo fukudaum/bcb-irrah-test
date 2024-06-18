@@ -14,14 +14,33 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String   @unique
-  cpf       String   @unique
-  cnpj      String   @unique
-  password  String
-  phone     String
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  username    String    @unique
+  cpf         String    @unique
+  cnpj        String    @unique
+  password    String
+  phone       String
   companyName String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt  
+  planType    PlanType  @default(PRE_PAID)
+  maxLimit    Float?    @default(0)
+  messageSent Int       @default(0)
+  balance     Float?    @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Message     Message[]
+}
+
+model Message {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  user       User    @relation(fields: [userId], references: [id])
+  phone      String
+  isWhatsApp Boolean
+  text       String
+}
+
+enum PlanType {
+  PRE_PAID
+  POST_PAID
 }
