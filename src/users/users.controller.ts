@@ -7,18 +7,15 @@ import {
   Patch,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma, User } from '@prisma/client';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateBalanceDto, UpdateLimitDto, UpdatePlanDto } from './users.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Delete('/:userId')
   async deleteUser(@Param('userId') userId: number) {
     try {
@@ -28,7 +25,6 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('/:userId')
   async updateUser(
     @Body() params: Prisma.UserUpdateInput,
@@ -50,7 +46,6 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/:userId')
   async getUser(@Param('userId') userId: number) {
     try {
@@ -59,7 +54,6 @@ export class UsersController {
       console.error(error);
     }
   }
-  @UseGuards(JwtAuthGuard)
   @Patch('/backoffice/plan/:plan/:userId')
   async updatePlan(@Param() params: UpdatePlanDto) {
     try {
@@ -69,7 +63,6 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('/backoffice/limit/:limit/:userId')
   async updateLimit(@Param() params: UpdateLimitDto) {
     try {
@@ -79,7 +72,6 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('/backoffice/balance/:balance/:userId')
   async updateBalance(@Param() params: UpdateBalanceDto) {
     try {
@@ -89,7 +81,6 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('/backoffice/balance/:userId')
   async getBalance(@Param('useId') userId: number) {
     try {
