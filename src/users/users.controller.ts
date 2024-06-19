@@ -49,13 +49,23 @@ export class UsersController {
   @Get('/:userId')
   async getUser(@Param('userId') userId: number) {
     try {
-      return await this.usersService.findUserById(userId);
+      return await this.usersService.findUserById(+userId);
     } catch (error) {
       console.error(error);
     }
   }
-  @Patch('/backoffice/plan/:plan/:userId')
-  async updatePlan(@Param() params: UpdatePlanDto) {
+
+  @Get()
+  async getUsers(): Promise<User[]> {
+    try {
+      return await this.usersService.getList();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  @Patch('/backoffice/plan/')
+  async updatePlan(@Body() params: UpdatePlanDto) {
     try {
       return await this.usersService.updatePlan(params);
     } catch (error) {
@@ -63,17 +73,18 @@ export class UsersController {
     }
   }
 
-  @Patch('/backoffice/limit/:limit/:userId')
-  async updateLimit(@Param() params: UpdateLimitDto) {
+  @Patch('/backoffice/limit/')
+  async updateLimit(@Body() params: UpdateLimitDto) {
     try {
+      console.log(params);
       return await this.usersService.updateLimit(params);
     } catch (error) {
       console.error(error);
     }
   }
 
-  @Patch('/backoffice/balance/:balance/:userId')
-  async updateBalance(@Param() params: UpdateBalanceDto) {
+  @Patch('/backoffice/balance/')
+  async updateBalance(@Body() params: UpdateBalanceDto) {
     try {
       return await this.usersService.addBalance(params);
     } catch (error) {
@@ -81,8 +92,8 @@ export class UsersController {
     }
   }
 
-  @Patch('/backoffice/balance/:userId')
-  async getBalance(@Param('useId') userId: number) {
+  @Get('/backoffice/balance/:userId')
+  async getBalance(@Param('userId') userId: number) {
     try {
       return await this.usersService.getBalance(+userId);
     } catch (error) {

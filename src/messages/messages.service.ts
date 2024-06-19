@@ -10,7 +10,9 @@ export class MessagesService {
     userId: number,
     { isWhatsApp, phone, text }: Prisma.MessageCreateInput,
   ) {
-    if (!this.verifyUser(userId)) {
+    const { isValid, userPhone } = await this.verifyUser(userId);
+
+    if (!isValid) {
       return false;
     }
 
@@ -23,13 +25,21 @@ export class MessagesService {
       },
     });
 
-    console.log(`From: ${userId}, To: ${phone}
+    this.mockMessageSender(userPhone, phone, text);
+
+    return true;
+  }
+
+  mockMessageSender(userPhone: string, phone: string, text: string) {
+    console.log(`From: ${userPhone}, To: ${phone}
       Message: ${text}  
     `);
   }
 
-  async verifyUser(userId: number): Promise<boolean> {
-    const user = await this.prisma.user.findFirst({
+  async verifyUser(
+    userId: number,
+  ): Promise<{ isValid: boolean; userPhone: string }> {
+    const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
@@ -39,6 +49,7 @@ export class MessagesService {
         planType: true,
         messageSent: true,
         id: true,
+        phone: true,
       },
     });
 
@@ -51,10 +62,10 @@ export class MessagesService {
       canSend = await this.addToLimit(user);
     }
 
-    return canSend;
+    return { isValid: canSend, userPhone: user.phone };
   }
 
-  async withdrawl({ id, balance }: Partial<User>) {
+  async withdrawl({ id, balance }: Partial<User>): Promise<boolean> {
     const total = balance - 0.25;
     const canSend = total >= 0;
 
@@ -72,7 +83,11 @@ export class MessagesService {
     return canSend;
   }
 
-  async addToLimit({ id, messageSent, maxLimit }: Partial<User>) {
+  async addToLimit({
+    id,
+    messageSent,
+    maxLimit,
+  }: Partial<User>): Promise<boolean> {
     const canSend = messageSent <= maxLimit;
 
     if (canSend) {

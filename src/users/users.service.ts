@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { UpdateBalanceDto, UpdateLimitDto, UpdatePlanDto } from './users.dto';
+import { UsersRepository } from './repositories/users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const userData = { ...data, password: hashedPassword };
-    const user = await this.prisma.user.create({
-      data: userData,
-    });
+    const user = await this.usersRepository.create(userData);
 
     return {
       ...user,
@@ -22,29 +20,15 @@ export class UsersService {
   }
 
   async findUserById(userId: number): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
-    return user;
+    return await this.usersRepository.findById(userId);
   }
 
   async findUserByUsername(username: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { username },
-    });
-
-    return user;
+    return await this.usersRepository.findByUsername(username);
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
-
-    return user;
+    return await this.usersRepository.findByEmail(email);
   }
 
   async deleteUser(userId: number) {
@@ -52,11 +36,7 @@ export class UsersService {
       throw new Error('User not found!');
     }
 
-    return this.prisma.user.delete({
-      where: {
-        id: userId,
-      },
-    });
+    return this.usersRepository.delete(userId);
   }
 
   async updateUser(
@@ -67,84 +47,83 @@ export class UsersService {
       throw new Error('User not found!');
     }
 
-    return await this.prisma.user.update({
-      data: params,
-      where: {
-        id: userId,
-      },
-    });
+    return await this.usersRepository.update(userId, params);
   }
 
-  async checkUseExist(userId: number): Promise<boolean> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        id: true,
-      },
-    });
+  private async checkUseExist(userId: number): Promise<boolean> {
+    const user = await this.usersRepository.findById(userId);
 
     return !!user;
   }
 
   async addBalance({ userId, balance }: UpdateBalanceDto): Promise<User> {
-    if (!this.checkUseExist(userId)) {
+    if (!this.checkUseExist(+userId)) {
       throw new Error('User not found!');
     }
 
-    return await this.prisma.user.update({
-      data: {
-        balance: {
-          increment: balance,
-        },
-      },
-      where: {
-        id: userId,
-      },
-    });
+    if (!balance) {
+      throw new Error('Missing Info!');
+    }
+
+    return await this.usersRepository.updateBalance(+userId, +balance);
+    // return await this.prisma.user.update({
+    //   data: {
+    //     balance: {
+    //       increment: +balance,
+    //     },
+    //   },
+    //   where: {
+    //     id: +userId,
+    //   },
+    // });
   }
 
   async getBalance(userId: number): Promise<number> {
-    return (
-      await this.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-        select: {
-          balance: true,
-        },
-      })
-    )?.balance;
+    return (await this.usersRepository.findById(userId))?.balance;
   }
 
   async updateLimit({ userId, limit }: UpdateLimitDto): Promise<User> {
-    if (!this.checkUseExist(userId)) {
+    if (!this.checkUseExist(+userId)) {
       throw new Error('User not found!');
     }
 
-    return await this.prisma.user.update({
-      data: {
-        maxLimit: limit,
-      },
-      where: {
-        id: userId,
-      },
-    });
+    if (!limit) {
+      throw new Error('Missing Info!');
+    }
+
+    return await this.usersRepository.updateField(userId, 'maxLimit', +limit);
+    // return await this.prisma.user.update({
+    //   data: {
+    //     maxLimit: +limit,
+    //   },
+    //   where: {
+    //     id: +userId,
+    //   },
+    // });
   }
 
   async updatePlan({ userId, plan }: UpdatePlanDto): Promise<User> {
-    if (!this.checkUseExist(userId)) {
+    if (!this.checkUseExist(+userId)) {
       throw new Error('User not found!');
     }
 
-    return await this.prisma.user.update({
-      data: {
-        planType: plan,
-      },
-      where: {
-        id: userId,
-      },
-    });
+    if (!plan) {
+      throw new Error('Missing Info!');
+    }
+
+    return await this.usersRepository.updateField(userId, 'planType', plan);
+
+    // return await this.prisma.user.update({
+    //   data: {
+    //     planType: plan,
+    //   },
+    //   where: {
+    //     id: +userId,
+    //   },
+    // });
+  }
+
+  async getList(): Promise<User[]> {
+    return await this.usersRepository.findMany();
   }
 }

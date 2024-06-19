@@ -8,7 +8,13 @@ export class MessagesController {
   @Post('/:userId')
   async sendMessage(@Param('userId') userId: number, @Body() params: any) {
     try {
-      return await this.messagesService.sendMessage(+userId, params);
+      const result = await this.messagesService.sendMessage(+userId, params);
+
+      if (!result) {
+        return { msg: 'An error occurred!' };
+      }
+
+      return { msg: 'Message was sent.' };
     } catch (error) {
       console.error(error);
     }
