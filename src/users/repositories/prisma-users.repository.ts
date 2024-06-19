@@ -13,7 +13,7 @@ export class PrismaUsersRepository implements UsersRepository {
     });
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(id: number): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: {
         id,
@@ -21,13 +21,13 @@ export class PrismaUsersRepository implements UsersRepository {
     });
   }
 
-  async findByUsername(username: string): Promise<User> {
+  async findByUsername(username: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { username },
     });
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { email },
     });
