@@ -14,8 +14,11 @@ export class UsersService {
     const user = await this.prisma.user.create({
       data: userData,
     });
-    delete user.password;
-    return user;
+
+    return {
+      ...user,
+      password: undefined,
+    };
   }
 
   async findUserById(userId: number): Promise<User | null> {
@@ -25,8 +28,6 @@ export class UsersService {
       },
     });
 
-    delete user.password;
-
     return user;
   }
 
@@ -35,7 +36,6 @@ export class UsersService {
       where: { username },
     });
 
-    delete user.password;
     return user;
   }
 
@@ -44,7 +44,6 @@ export class UsersService {
       where: { email },
     });
 
-    delete user.password;
     return user;
   }
 
