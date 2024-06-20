@@ -53,6 +53,10 @@ Não foi utilizado um gerenciador de estado global (como Redux) devido à simpli
 A estilização foi feita principalmente com CSS puro e classes CSS aplicadas diretamente nos elementos JSX.
 A responsabilidade pela estilização ficou limitada ao escopo do componente, sem o uso de frameworks de UI externos.
 
+## Testes Unitários:
+
+Foram realizados os testes unitários apenas do módulo de usuários, apenas para fins de demonstração.
+
 ## Installation
 
 ```bash
@@ -84,25 +88,25 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
-### Passo a Passo para Execução do Sistema (README.md)
+# Passo a Passo para Execução do Sistema (README.md)
 
 ## Pré-requisitos
 Certifique-se de ter Node.js e npm (ou yarn) instalados globalmente na sua máquina.
 
 ## Passos para Execução
-1- Clonar o Repositório
-2- Instalar Dependências
-3- Configurar Variáveis de Ambiente
+### 1- Clonar o Repositório
+### 2- Instalar Dependências
+### 3- Configurar Variáveis de Ambiente
   Renomeie o arquivo .env.example para .env e configure as variáveis de ambiente necessárias, se aplicável.
-4- Executar o Backend (NestJS)
+### 4- Executar o Backend (NestJS)
   Iniciará o servidor backend localmente em http://localhost:3010.
-5- Executar o Frontend (React)
+### 5- Executar o Frontend (React)
   Iniciará o aplicativo React em desenvolvimento e abrirá automaticamente no navegador em http://localhost:30000.
-6- Acessar o Aplicativo
+### 6- Acessar o Aplicativo
   Abra seu navegador e navegue para http://localhost:3000 para acessar o aplicativo.
-7- Utilização do Sistema
+### 7- Utilização do Sistema
   Explore as diferentes funcionalidades conforme descrito nas seções específicas do README.md, como "Gerenciamento de Usuários", "Envio de Mensagens", etc.
-8- Finalização
+### 8- Finalização
   Para interromper a execução do servidor backend ou do aplicativo React em desenvolvimento, use Ctrl + C no terminal correspondente.
 
 ## Support
