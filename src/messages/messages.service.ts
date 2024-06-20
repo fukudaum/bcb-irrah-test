@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { MessageDto } from './messages.dto';
 
 @Injectable()
 export class MessagesService {
@@ -8,7 +9,7 @@ export class MessagesService {
 
   async sendMessage(
     userId: number,
-    { isWhatsApp, phone, text }: Prisma.MessageCreateInput,
+    { isWhatsApp, receiverId, text }: MessageDto,
   ) {
     const { isValid, userPhone } = await this.verifyUser(userId);
 
@@ -16,16 +17,26 @@ export class MessagesService {
       return false;
     }
 
+    const receiver = await this.prisma.user.findUnique({
+      where: {
+        id: +receiverId,
+      },
+    });
+
+    if (!receiver) {
+      return false;
+    }
+
     await this.prisma.message.create({
       data: {
         isWhatsApp,
-        phone,
+        phone: receiver.phone,
         text,
         userId,
       },
     });
 
-    this.mockMessageSender(userPhone, phone, text);
+    this.mockMessageSender(userPhone, receiver.phone, text);
 
     return true;
   }

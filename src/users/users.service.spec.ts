@@ -185,7 +185,7 @@ describe('UsersService', () => {
   });
 
   it('should return false if user does not exist', async () => {
-    const exists = await service;
+    const exists = await service['checkUseExist'](999);
     expect(exists).toBe(false);
   });
 });

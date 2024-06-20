@@ -14,6 +14,12 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
+  app.enableCors({
+    origin: 'http://localhost:3000', // Substitua pelo URL do seu frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  await app.listen(3010);
 }
 bootstrap();
