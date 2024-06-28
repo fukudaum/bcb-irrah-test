@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 
+@Injectable()
 export abstract class UsersRepository {
   abstract create(data: Prisma.UserCreateInput): Promise<User>;
   abstract findById(id: number): Promise<User | null>;

@@ -63,16 +63,6 @@ export class UsersService {
     }
 
     return await this.usersRepository.updateBalance(+userId, +balance);
-    // return await this.prisma.user.update({
-    //   data: {
-    //     balance: {
-    //       increment: +balance,
-    //     },
-    //   },
-    //   where: {
-    //     id: +userId,
-    //   },
-    // });
   }
 
   async getBalance(userId: number): Promise<number> {

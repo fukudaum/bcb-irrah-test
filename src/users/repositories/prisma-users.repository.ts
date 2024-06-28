@@ -7,10 +7,19 @@ import { Injectable } from '@nestjs/common';
 export class PrismaUsersRepository implements UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Prisma.UserCreateInput): Promise<User> {
-    return await this.prisma.user.create({
-      data,
-    });
+  async create({
+    cnpj,
+    companyName,
+    cpf,
+    email,
+    password,
+    phone,
+    username,
+  }: Prisma.UserCreateInput): Promise<User> {
+    return await this.prisma.$queryRaw(Prisma.sql`
+      INSERT INTO User (cnpj, companyName, cpf, email, password, phone, username )
+      VALUES (${cnpj}, ${companyName}, ${cpf}, ${email}, ${password}, ${phone}, ${username})
+    `);
   }
 
   async findById(id: number): Promise<User | null> {

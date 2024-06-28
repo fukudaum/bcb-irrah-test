@@ -14,6 +14,6 @@ const userRepositoryProvider: Provider = {
   imports: [],
   providers: [UsersService, userRepositoryProvider, PrismaService],
   controllers: [UsersController],
-  exports: [],
+  exports: [UsersService],
 })
 export class UsersModule {}
