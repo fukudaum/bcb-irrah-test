@@ -30,7 +30,7 @@
 ## Tecnologias Utilizadas:
 
 O sistema foi desenvolvido utilizando React para o frontend e Node.js (NestJS) para o backend.
-O backend está neste repositorio, e o frontend neste: https://github.com/fukudaum/big-chat-brasil
+O backend está neste repositorio, e o frontend neste: https://github.com/fukudaum/bcb-front
 O banco de dados utilizado foi postgres rodando em docker, utilizando Prisma.
 
 ## Dependências Externas:
